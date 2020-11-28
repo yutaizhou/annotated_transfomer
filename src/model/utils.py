@@ -2,6 +2,7 @@ import copy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.nn.modules.dropout import Dropout
 
 def repeat_module(module, N):
     return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
@@ -12,16 +13,6 @@ def causal_mask(model_dim):
     attn_shape = (1, model_dim, model_dim)
     mask = torch.triu(torch.ones(attn_shape, dtype=torch.uint8), diagonal=1) # 1 for subsequent positions
     return mask == 0 # True for attending positions
-
-
-class Generator(nn.Module):
-    def __init__(self, model_dim, vocab_size):
-        super().__init__()
-        self.out_fc = nn.Linear(model_dim, vocab_size)
-    
-    def forward(self, x):
-        logits = self.out_fc(x)
-        return F.softmax(logits, dim=-1)
 
 
 class LayerNorm(nn.Module):
@@ -45,3 +36,27 @@ class SublayerConnection(nn.Module):
     
     def forward(self, x, sublayer):
         return x + self.dropout(sublayer(self.norm(x)))
+
+
+class Generator(nn.Module):
+    def __init__(self, model_dim, vocab_size):
+        super().__init__()
+        self.out_fc = nn.Linear(model_dim, vocab_size)
+    
+    def forward(self, x):
+        logits = self.out_fc(x)
+        return F.softmax(logits, dim=-1)
+
+
+class PositionWiseFC(nn.Module):
+    def __init__(self, model_dim, fc_dim, dropout:float=0.1):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(model_dim, fc_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(fc_dim, model_dim)
+        )
+    
+    def forward(self, x):
+        return self.net(x)
