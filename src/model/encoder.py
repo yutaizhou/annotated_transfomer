@@ -1,5 +1,4 @@
 import torch.nn as nn
-import torch.nn.functional as F
 from .utils import repeat_module, LayerNorm, SublayerConnection
 
 class Encoder(nn.Module):
@@ -16,11 +15,11 @@ class Encoder(nn.Module):
 
 class EncoderLayer(nn.Module):
     """ self (bidirectional or causal) attention + FC """
-    def __init__(self, model_dim, self_attn, fc_net, dropout_p):
+    def __init__(self, model_dim, self_attn, fc_net, dropout):
         super().__init__()
         self.self_attn = self_attn
         self.fc_net = fc_net
-        self.sublayers = repeat_module(SublayerConnection(model_dim, dropout_p), 2)
+        self.sublayers = repeat_module(SublayerConnection(model_dim, dropout), 2)
         self.model_dim = model_dim
     
     def forward(self, x, mask):

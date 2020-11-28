@@ -1,4 +1,5 @@
 import torch.nn as nn
+
 class TFEncoderDecoder(nn.Module):
     """ Original Transformer architecture that uses both the encoder and decoder side"""
     def __init__(self, encoder, decoder, src_embed, tgt_embed, generator):

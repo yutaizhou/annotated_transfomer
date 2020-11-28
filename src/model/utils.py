@@ -35,6 +35,7 @@ class LayerNorm(nn.Module):
         std = x.std(-1, keepdim=True)
         return self.a_2 * (x - mean) / (std + self.eps) + self.b_2
 
+
 class SublayerConnection(nn.Module):
     """ residual connection + layer norm """
     def __init__(self, model_dim, dropout_p):

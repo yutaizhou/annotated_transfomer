@@ -1,5 +1,4 @@
 import torch.nn as nn
-import torch.nn.functional as F
 from .utils import repeat_module, LayerNorm, SublayerConnection
 
 class Decoder(nn.Module):
@@ -15,13 +14,13 @@ class Decoder(nn.Module):
 
 class DecoderLayer(nn.Module):
     """ causal self attention + cross attention + FC """
-    def __init__(self, model_dim, self_attn, cross_attn, fc_net, dropout_p):
+    def __init__(self, model_dim, self_attn, cross_attn, fc_net, dropout):
         super().__init__()
         self.model_dim = model_dim
         self.self_attn = self_attn
         self.cross_attn = cross_attn
         self.fc_net = fc_net
-        self.sublayers = repeat_module(SublayerConnection, 3)
+        self.sublayers = repeat_module(SublayerConnection(model_dim, dropout), 3)
     
     def forward(self, x, tgt_mask, mem, mem_mask):
         m = mem
