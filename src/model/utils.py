@@ -16,6 +16,7 @@ def causal_mask(model_dim):
 
 class LayerNorm(nn.Module):
     def __init__(self, model_dim, eps=1e-6):
+        super().__init__()
         self.a_2 = nn.Parameter(torch.ones(model_dim))
         self.b_2 = nn.Parameter(torch.zeros(model_dim))
         self.eps = eps

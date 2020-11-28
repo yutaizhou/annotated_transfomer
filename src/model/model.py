@@ -1,9 +1,7 @@
 import copy
 import torch.nn as nn
 
-from model import *
 from .embedding import PositionalEncoding, Embedding
-from model.utils import PositionWiseFC
 from .utils import PositionWiseFC, Generator
 from .attention import MultiHeadedAttention
 from .encoderDecoderTF import EncoderDecoderTF

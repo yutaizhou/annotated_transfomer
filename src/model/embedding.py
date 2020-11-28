@@ -1,3 +1,4 @@
+import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -18,7 +19,7 @@ class PositionalEncoding(nn.Module):
 
         pe = torch.zeros(max_len, model_dim)
         position = torch.arange(0, max_len).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, model_dim, 2) * -(torch.log(10000.0) / model_dim)) #???
+        div_term = torch.exp(torch.arange(0, model_dim, 2) * -(math.log(10000.0) / model_dim)) #???
 
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term) 

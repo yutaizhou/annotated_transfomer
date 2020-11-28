@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.nn.functional import dropout
-from .utils import repeat_module,
+from .utils import repeat_module
 
 def attention(q, k, v, mask=None, dropout:nn.Module=None):
     """ scaled dot product attention """
