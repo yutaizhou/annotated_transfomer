@@ -7,6 +7,13 @@ def repeat_module(module, N):
     return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
 
 
+def causal_mask(model_dim):
+    """ have an entry attend to previous positions and itself ONLY, no subsequent enetries"""
+    attn_shape = (1, model_dim, model_dim)
+    mask = torch.triu(torch.ones(attn_shape, dtype=torch.uint8), diagonal=1) # 1 for subsequent positions
+    return mask == 0 # True for attending positions
+
+
 class Generator(nn.Module):
     def __init__(self, model_dim, vocab_size):
         super().__init__()
