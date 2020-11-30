@@ -1,3 +1,4 @@
+import math 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -7,8 +8,8 @@ def attention(q, k, v, mask=None, dropout:nn.Module=None):
     """ scaled dot product attention """
     model_dim = q.shape[-1]
 
-    attn = (q @ k.transpose(-2,-1)) / torch.sqrt(model_dim)
-    attn = attn if (mask is None) else attn.masked_fill(mask==0, float('inf'))
+    attn = (q @ k.transpose(-2,-1)) / math.sqrt(model_dim)
+    attn = attn if (mask is None) else attn.masked_fill(mask==0, -float('inf'))
     attn = F.softmax(attn, dim=-1)
     attn = attn if (dropout is None) else dropout(attn)
 
@@ -27,7 +28,8 @@ class MultiHeadedAttention(nn.Module):
     def forward(self, query, key, value, mask=None):
         
         B = query.shape[0]
-        if mask is not None: mask.unsqueeze_(1) # same mask for all heads
+        if mask is not None: 
+            mask = mask.unsqueeze(1) # same mask for all heads
 
         # linear projections of src or tgt or mem into q,k,v
         sz = (B, -1, self.num_head, self.head_size)

@@ -9,6 +9,10 @@ class EncoderDecoderTF(nn.Module):
         self.src_embed = src_embed
         self.tgt_embed = tgt_embed
         self.generator = generator
+
+        self.model_dim = src_embed[0].model_dim # grab attribute from token embedding layer of src embedder
+        self.src_vocab_size = src_embed[0].vocab_size
+        self.tgt_vocab_size = tgt_embed[0].vocab_size
     
     def _encode(self, src, src_mask):
         src = self.src_embed(src)

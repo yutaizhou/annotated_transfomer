@@ -8,9 +8,10 @@ class Embedding(nn.Module):
         super().__init__()
         self.embeddings = nn.Embedding(vocab_size, model_dim)
         self.model_dim = model_dim
+        self.vocab_size = vocab_size
     
     def forward(self, x):
-        return self.embeddings(x) * torch.sqrt(self.model_dim)
+        return self.embeddings(x) * math.sqrt(self.model_dim)
 
 class PositionalEncoding(nn.Module):
     def __init__(self, model_dim, dropout:float, max_len = 5000):

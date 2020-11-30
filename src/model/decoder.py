@@ -7,9 +7,9 @@ class Decoder(nn.Module):
         self.layers = repeat_module(layer, N)
         self.norm = LayerNorm(layer.model_dim)
 
-    def forward(self, x, tgt_mask, mem, mem_mask):
+    def forward(self, x, mem, tgt_mask, mem_mask):
         for layer in self.layers:
-            x = layer(x, tgt_mask, mem,  mem_mask)
+            x = layer(x, mem, tgt_mask,  mem_mask)
         return self.norm(x)
 
 class DecoderLayer(nn.Module):
@@ -22,7 +22,7 @@ class DecoderLayer(nn.Module):
         self.fc_net = fc_net
         self.sublayers = repeat_module(SublayerConnection(model_dim, dropout), 3)
     
-    def forward(self, x, tgt_mask, mem, mem_mask):
+    def forward(self, x, mem, tgt_mask, mem_mask):
         m = mem
         self_attn_sublayer =  lambda x: self.self_attn(x,x,x,tgt_mask)
         cross_attn_sublayer = lambda x: self.cross_attn(x,m,m,mem_mask)
